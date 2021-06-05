@@ -1,0 +1,49 @@
+﻿@using Rem.Models
+@using DataLibrary
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject LoggedState loginState
+@inject NavigationManager NavManager
+
+@page "/central/{Id}/MudarEstado/"
+
+<h3>Alterar Estado</h3>
+
+@if (res == true)
+{
+    <h4>Inserir Novo Estado</h4>
+    <input id="Mensagem" name="Mensagem" type="text" @bind-value="Mensagem" />
+    <button type="submit" @onclick=@MudarEstado> Submit </button>
+}
+else
+{
+    <p>Não tem Permissão</p>
+}
+@code {
+
+    string Mensagem = "";
+
+    List<BooleanModel> booleanModelos;
+    bool res = false;
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string sql = "CALL verificaGestor(" + Id + ",'" + loginState.Username + "','" + loginState.Pass + "')";
+        booleanModelos = await _data.LoadData<BooleanModel, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+        foreach (var i in booleanModelos)
+        {
+            if (i.BooleanM == true) res = true;
+        }
+    }
+
+    private async Task MudarEstado()
+    {
+        string sql = "CALL mudarEstado(" + Id + ",'" + Mensagem + "')";
+        await _data.SaveData(sql, new { }, _config.GetConnectionString("default"));
+        NavManager.NavigateTo("/central/" + Id);
+    }
+}

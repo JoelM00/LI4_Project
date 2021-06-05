@@ -1,0 +1,9 @@
+C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\bin\Debug\netcoreapp3.1\DataLibrary.deps.json
+C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\bin\Debug\netcoreapp3.1\DataLibrary.dll
+C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\bin\Debug\netcoreapp3.1\DataLibrary.pdb
+C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.csproj.AssemblyReference.cache
+C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.AssemblyInfoInputs.cache
+C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.AssemblyInfo.cs
+C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.csproj.CoreCompileInputs.cache
+C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.dll
+C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.pdb

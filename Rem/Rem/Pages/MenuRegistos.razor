@@ -1,0 +1,46 @@
+﻿@page "/MenuRegistos"
+@using DataLibrary
+@using Rem.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject NavigationManager NavManager
+
+<h3>MenuRegistos</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tipo</th>
+            <th>Seguir</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Empresa</td>
+            <td><button @onclick="@(() => IrRegistoEmpresa())">Seguir</button></td>
+        </tr>
+        <tr>
+            <td>Utilizador</td>
+            <td><button @onclick="@(() => IrRegistoUtilizador())">Seguir</button></td>
+        </tr>
+        <tr>
+            <td>Gestor</td>
+            <td><button @onclick="@(() => IrRegistoGestor())">Seguir</button></td>
+        </tr>
+    </tbody>
+</table>
+
+@code {
+    protected void IrRegistoEmpresa()
+    {
+        NavManager.NavigateTo("/MenuRegistos/Empresa");
+    }
+    protected void IrRegistoUtilizador()
+    {
+        NavManager.NavigateTo("/MenuRegistos/Utilizador");
+    }
+    protected void IrRegistoGestor()
+    {
+        NavManager.NavigateTo("/MenuRegistos/Gestor");
+    }
+}

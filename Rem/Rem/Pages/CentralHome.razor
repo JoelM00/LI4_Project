@@ -1,0 +1,130 @@
+﻿@page "/central/{Id}"
+
+@using DataLibrary
+@using Rem.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject NavigationManager NavManager
+@inject LoggedState loginState;
+
+
+<h3>Central Home</h3>
+@if (centrais == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @foreach (var c in centrais)
+    {
+        <ul>
+            <li>Nome: @c.Nome</li>
+            <li>Tipo: @c.Tipo</li>
+            <li>Inauguracao: @c.Inauguracao</li>
+            <li>Estado: @c.Estado</li>
+            <li>Motores: @c.Motorers</li>
+            <li>Valor: @c.Valor</li>
+            <li>Maximo Diario: @c.MaximoDiario</li>
+            <li>Minimo Diario: @c.MinimoDiario</li>
+            <li>UltimaAtividade: @c.UltimaAtividade</li>
+            <li>Gestor: @c.Gestor_Utilizador_email</li>
+            <li>Empresa: @c.EmpresaNome</li>
+            <li>CEO: @c.Ceo</li>
+            <li>Sede: @c.Sede</li>
+            <li>Contacto: @c.Contacto</li>
+            <li>Descricao:@c.Descricao</li>
+            <li>X: @c.CoordenadaX</li>
+            <li>Y: @c.CoordenadaY</li>
+            <li>Endereco: @c.Endereco</li>
+        </ul>
+        <p><button @onclick="@(() => HistoricoEnergia())">HistoricoEnergia</button>
+        <button @onclick="@(() => CondicoesClimaticas())">CondicoesClimaticas</button></p>
+        @if (loginState.IsLoggedIn == true)
+        {
+            <p>
+            @if (!avisosAtivados)
+            {<button @onclick="@(() => QueroAvisos())">Ativar Avisos</button>
+            }
+            else
+            {
+               <button @onclick="@(() => NaoQueroAvisos())">Desativar Avisos</button>
+            }
+            <button @onclick="@(() => VerAvisos())">VerAvisos</button>
+            </p>
+
+            @if (c.Gestor_Utilizador_email == loginState.Username)
+            {
+                <p><button @onclick="@(() => AdicionarAviso())">AdicionarAviso</button>
+                <button @onclick="@(() => MudarEstado())">MudarEstado</button>
+                <button @onclick="@(() => RemoverCentral())">RemoverCentral</button></p>
+            }
+        }
+    }
+}
+
+@code {
+
+    List<CentralHomeModel> centrais;
+    List<BooleanModel> booleanModelos;
+    bool avisosAtivados = false;
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string sql = "centralInfo(" + Id + ")";
+
+        centrais = await _data.LoadData<CentralHomeModel, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+
+        string sql2 = "CALL verificaAviso(" + Id + ",'" + loginState.Username + "')";
+        booleanModelos = await _data.LoadData<BooleanModel, dynamic>(sql2, new { }, _config.GetConnectionString("default"));
+        foreach (var i in booleanModelos)
+        {
+            if (i.BooleanM == true) avisosAtivados = true;
+        }
+    }
+
+    protected async Task QueroAvisos()
+    {
+        string sql = "CALL queroAvisos('" + loginState.Username + "'," + Id + ")";
+        await _data.SaveData(sql, new { }, _config.GetConnectionString("default"));
+        avisosAtivados = true;
+    }
+
+    protected async Task NaoQueroAvisos()
+    {
+        string sql = "CALL naoQueroAviso(" + Id + ",'" + loginState.Username + "')";
+        await _data.SaveData(sql, new { }, _config.GetConnectionString("default"));
+        avisosAtivados = false;
+    }
+
+    protected void RemoverCentral()
+    {
+        NavManager.NavigateTo("/central/" + Id + "/remover");
+    }
+    protected void CondicoesClimaticas()
+    {
+        NavManager.NavigateTo("/central/" + Id + "/condicoesClimaticas");
+    }
+    protected void HistoricoEnergia()
+    {
+        NavManager.NavigateTo("/central/" + Id + "/historicoEnergia");
+    }
+
+    protected void VerAvisos()
+    {
+        NavManager.NavigateTo("/central/" + Id + "/avisos");
+    }
+
+    protected void AdicionarAviso()
+    {
+        NavManager.NavigateTo("/central/" + Id + "/AdicionarAviso");
+    }
+
+    protected void MudarEstado()
+    {
+        NavManager.NavigateTo("/central/" + Id +"/MudarEstado");
+    }
+}

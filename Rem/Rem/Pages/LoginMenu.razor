@@ -1,0 +1,56 @@
+﻿
+@using Rem.Models
+@using DataLibrary
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject LoggedState loginState;
+
+@page "/LoginMenu"
+
+<h3>LoginMenu</h3>
+
+@if (loginState.IsLoggedIn.Equals(false))
+{
+    <h4>Login</h4>
+
+    <p>Email: <input id="Email" type="text" @bind-value="Email" /></p>
+    <p>Pass: <input id="Pass" type="text" @bind-value="Pass" /></p>
+
+    <button type="submit" @onclick=@InserirUtilizador> Submit </button>
+}
+else
+{
+    <button @onclick="@(() => LogOut())">LogOut</button>
+}
+
+@code {
+
+    public string Email;
+    public string Pass;
+
+    List<UtilizadorLogin> utilizador;
+
+
+    private async Task InserirUtilizador()
+    {
+        string sql = "CALL login('" + Email + "','" + Pass + "')";
+        utilizador = await _data.LoadData<UtilizadorLogin, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+
+        if (utilizador != null)
+        {
+            foreach (var c in utilizador)
+            {
+                loginState.SetLogin(true, c.Email, c.Password, c.Gestor);
+            }
+        }
+    }
+
+    protected async Task LogOut()
+    {
+        string sql = "CALL logOut('" + loginState.Username + "');";
+        await _data.SaveData(sql, new { }, _config.GetConnectionString("default"));
+        loginState.SetLogin(false, "", "", false);
+    }
+
+}

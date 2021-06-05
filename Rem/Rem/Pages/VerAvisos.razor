@@ -1,0 +1,60 @@
+﻿@page "/central/{id}/avisos"
+
+@using DataLibrary
+@using Rem.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject NavigationManager NavManager
+@inject LoggedState loginState;
+
+<h3>VerAvisos</h3>
+
+<input id="date" type="date" placeholder="YYYY-MM-DD" @bind-value="dataMin" />
+
+<button type="submit" @onclick=@MostrarAvisos> Submit </button>
+
+@if (avisos == null)
+{
+    <p><em>Insira Dados..</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mensagem</th>
+                <th>Data</th>
+                <th>Central</th>
+                <th>Nome</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in avisos)
+            {
+                <tr>
+                       <td>@c.Mensagem</td>
+                        <td>@c.Data.Year - @c.Data.Month - @c.Data.Day </td>
+                        <td>@c.Central</td>
+                        <td>@c.Nome</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    public DateTime dataMin { get; set; }
+    List<AvisosModel> avisos;
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected async Task MostrarAvisos()
+    {
+        string sql = "CALL verAvisos(" + Id +
+            ",'" + dataMin.Year + "-" + dataMin.Month + "-" + dataMin.Day + "');";
+            avisos = await _data.LoadData<AvisosModel, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+    }
+}

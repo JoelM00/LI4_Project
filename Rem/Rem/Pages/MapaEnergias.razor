@@ -1,0 +1,79 @@
+﻿@page "/MapaEnergias"
+
+@using DataLibrary
+@using Rem.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject NavigationManager NavManager
+@inject LoggedState loginState;
+
+<h3>MapaEnergias</h3>
+
+<input id="date" type="date" placeholder="YYYY-MM-DD" @bind-value="data" />
+
+<p>TipoAtual=@unidade</p>
+<button @onclick=@PutEolica> Eolica </button>
+<button @onclick=@PutHidrolica> Hidrolica </button>
+<button @onclick=@PutGeotermica> Geotermica </button>
+
+<p></p><button type="submit" @onclick=@MostrarHistorico> Submit </button><p></p>
+
+@if (grafico == null)
+{
+    <p><em>Insira Dados..</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>CoordenadaX</th>
+                <th>CoordenadaY</th>
+                <th>Endereco</th>
+                <th>Quant</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in grafico)
+            {
+                <tr>
+                    <td>@c.CoordenadaX </td>
+                    <td>@c.CoordenadaY </td>
+                    <td>@c.Endereco</td>
+                    <td>@c.Quant</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    public DateTime data { get; set; }
+    public string unidade { get; set; } = "";
+    List<GraficoModel> grafico;
+
+    protected void PutEolica()
+    {
+        unidade = "eolica";
+    }
+
+    protected void PutHidrolica()
+    {
+        unidade = "hidrolica";
+    }
+
+    protected void PutGeotermica()
+    {
+        unidade = "geotermica";
+    }
+
+    protected async Task MostrarHistorico()
+    {
+        string sql = "CALL dadosNacionais('" +
+            data.Year + "-" + data.Month + "-" + data.Day +
+            "','" + unidade + "');";
+        grafico = await _data.LoadData<GraficoModel, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+    }
+}

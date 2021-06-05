@@ -1,0 +1,37 @@
+﻿@using Rem.Models
+@using DataLibrary
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject NavigationManager NavManager
+
+@page "/MenuRegistos/Gestor"
+
+<h1>Registo de Gestor</h1>
+
+<h4>Inserir Novo Gestor</h4>
+<EditForm Model="@newGestor" OnValidSubmit="@InserirGestor">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>Email: <InputText id="Email" @bind-Value="newGestor.Email" /></p>
+    <p>Pass:<InputText id="Pass" @bind-Value="newGestor.Pass" /></p>
+    <p>Nome: <InputText id="Nome" @bind-Value="newGestor.Nome" /></p>
+    <p>Empresa: <InputNumber id="Empresa" @bind-Value="newGestor.Empresa" /></p>
+    <p>Cargo: <InputText id="Cargo" @bind-Value="newGestor.Cargo" /></p>
+
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+
+@code { private GestorModel newGestor = new GestorModel();
+
+    private async Task InserirGestor()
+    {
+        string sql = "CALL registoGestor('" + newGestor.Email + "','" + newGestor.Pass + "','" + newGestor.Nome + "'," + newGestor.Empresa + ",'" + newGestor.Cargo + "')";
+        await _data.SaveData(sql, new { }, _config.GetConnectionString("default"));
+
+        newGestor = new GestorModel();
+        NavManager.NavigateTo("/MenuRegistos");
+    } }

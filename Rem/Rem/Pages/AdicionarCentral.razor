@@ -1,0 +1,58 @@
+﻿@using Rem.Models
+@using DataLibrary
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject LoggedState loginState
+@inject NavigationManager NavManager
+
+@page "/mapaCentral/AdicionarCentral"
+
+<h1>Adicionar Central</h1>
+<h4>Inserir Nova Central</h4>
+<EditForm Model="@newCentral" OnValidSubmit="@InserirCentral">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>Estado: <InputText id="Estado" @bind-Value="newCentral.Estado" /></p>
+    <p>Motores: <InputNumber id="Motores" @bind-Value="newCentral.Motores" /></p>
+    <p>Nome: <InputText id="Nome" @bind-Value="newCentral.Nome" /></p>
+    <p> Tipo:<InputSelect @bind-Value="newCentral.Tipo">
+        <option>eolica</option>
+        <option>hidrolica</option>
+        <option>geotermica</option>
+    </InputSelect></p>
+    <p>Inauguracao: <InputNumber id="Inauguracao" @bind-Value="newCentral.Inauguracao" /></p>
+    <p>Empresa: <InputNumber id="Empresa" @bind-Value="newCentral.Empresa" /></p>
+    <p>MaxDiario: <InputNumber id="MaxDiario" @bind-Value="newCentral.MaxDiario" /></p>
+    <p>MinDiario: <InputNumber id="MinDiario" @bind-Value="newCentral.MinDiario" /></p>
+    <p>CoordenadaX: <InputNumber id="CoordenadaX" @bind-Value="newCentral.CoordenadaX" /></p>
+    <p>CoordenadaY: <InputNumber id="CoordenadaY" @bind-Value="newCentral.CoordenadaY" /></p>
+    <p>Endereco : <InputText id="Endereco" @bind-Value="newCentral.Endereco" /></p>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@code {
+
+    private AddCentralModel newCentral = new AddCentralModel();
+
+    private async Task InserirCentral()
+    {
+        string sql = "CALL adicionarCentral('" + newCentral.Estado + "',"
+                                               + newCentral.Motores + ",'"
+                                               + newCentral.Nome + "','"
+                                               + newCentral.Tipo + "',"
+                                               + newCentral.Inauguracao + ","
+                                               + newCentral.Empresa + ","
+                                               + newCentral.CoordenadaX + ","
+                                               + newCentral.CoordenadaY + ",'"
+                                               + newCentral.Endereco + "',"
+                                               + newCentral.MaxDiario + ","
+                                               + newCentral.MinDiario + ",'"
+                                               + loginState.Username + "')";
+
+        await _data.SaveData(sql, new { }, _config.GetConnectionString("default"));
+        NavManager.NavigateTo("/mapaCentral");
+    }
+}

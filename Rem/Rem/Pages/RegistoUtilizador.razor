@@ -1,0 +1,34 @@
+﻿@using Rem.Models
+@using DataLibrary
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject NavigationManager NavManager
+
+@page "/MenuRegistos/Utilizador"
+
+<h1>RegistoUtilizador</h1>
+
+<h4>Inserir Novo Utilizador</h4>
+<EditForm Model="@newUtilizador" OnValidSubmit="@InserirUtilizador">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>Email: <InputText id="Email" @bind-Value="newUtilizador.Email" /></p>
+    <p>Nome: <InputText id="Nome" @bind-Value="newUtilizador.Nome" /></p>
+    <p>Pass:<InputText id="Pass" @bind-Value="newUtilizador.Pass" /></p>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+
+@code { private UtilizadorModel newUtilizador = new UtilizadorModel();
+
+    private async Task InserirUtilizador()
+    {
+        string sql = "CALL registoUtilizador('" + newUtilizador.Email + "','" + newUtilizador.Pass + "','" + newUtilizador.Nome + "')";
+        await _data.SaveData(sql, new { }, _config.GetConnectionString("default"));
+
+        newUtilizador = new UtilizadorModel();
+        NavManager.NavigateTo("/MenuRegistos");
+    } }

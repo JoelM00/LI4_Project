@@ -1,0 +1,45 @@
+﻿@using Rem.Models
+@using DataLibrary
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject NavigationManager NavManager
+
+@page "/MenuRegistos/Empresa"
+
+<h1>Registo de Empresa</h1>
+
+<h4>Inserir Nova Empresa</h4>
+<EditForm Model="@newEmpresa" OnValidSubmit="@InserirEmpresa">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>Nome: <InputText id="Nome" @bind-Value="newEmpresa.Nome" /></p>
+    <p>Ceo:<InputText id="Ceo" @bind-Value="newEmpresa.Ceo" /></p>
+    <p>Sede: <InputText id="Sede" @bind-Value="newEmpresa.Sede" /></p>
+    <p>PassEspecial: <InputText id="PassEspecial" @bind-Value="newEmpresa.PassEspecial" /></p>
+    <p>Contacto: <InputText id="Contacto" @bind-Value="newEmpresa.Contacto" /></p>
+    <p>Descricao: <InputText id="Descricao" @bind-Value="newEmpresa.Descricao" /></p>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@if (notificacao == true) {<p>--Falhou a pass Especial--</p>}
+
+@code { 
+    private EmpresaModel newEmpresa = new EmpresaModel();
+    public bool notificacao = false;
+
+    private async Task InserirEmpresa()
+    {
+        if (newEmpresa.PassEspecial == "1234")
+        {
+            string sql = "CALL registoEmpresa('" + newEmpresa.Nome + "','" + newEmpresa.Ceo + "','" + newEmpresa.Sede + "','" + newEmpresa.PassEspecial + "','" + newEmpresa.Contacto + "','" + newEmpresa.Descricao + "')";
+            await _data.SaveData(sql, new { }, _config.GetConnectionString("default"));
+
+            newEmpresa = new EmpresaModel();
+            NavManager.NavigateTo("/MenuRegistos");
+        }
+        else { notificacao = true; }
+    }
+}

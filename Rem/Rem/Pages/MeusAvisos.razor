@@ -1,0 +1,66 @@
+﻿@page "/MeusAvisos"
+
+@using DataLibrary
+@using Rem.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject NavigationManager NavManager
+@inject LoggedState loginState;
+
+
+@if (loginState.IsLoggedIn == true)
+{
+    <h3>MeusAvisos</h3>
+
+    @if (avisos == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <button type="submit" @onclick=@EliminarAvisos> EliminarTodosOsAvisos </button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Mensagem</th>
+                    <th>Data</th>
+                    <th>Central</th>
+                    <th>Nome</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in avisos)
+                {
+                    <tr>
+                        <td>@c.Mensagem</td>
+                        <td>@c.Data.Year - @c.Data.Month - @c.Data.Day </td>
+                        <td>@c.Central</td>
+                        <td>@c.Nome</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <p>Precisa estar logado para usufrir desta funcionalidade</p>
+}
+
+@code {
+    List<AvisosModel> avisos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        string sql = "CALL meusAvisos('" + loginState.Username + "');";
+        avisos = await _data.LoadData<AvisosModel, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+    }
+
+    private async Task EliminarAvisos()
+    {
+        string sql = "CALL resetLastActivity('" + loginState.Username +"')";
+        await _data.SaveData(sql, new { }, _config.GetConnectionString("default"));
+        NavManager.NavigateTo("/");
+    }
+}

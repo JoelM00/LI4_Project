@@ -1,0 +1,67 @@
+﻿@page "/mapaCentral"
+
+@using DataLibrary
+@using Rem.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject LoggedState loginState
+@inject NavigationManager NavManager
+
+
+<h3>MapaCentral</h3>
+@if (centrais == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ver</th>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>CoordenadaX</th>
+                <th>CoordenadaY</th>
+                <th>Endereco</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in centrais)
+            {
+                <tr>
+                    <td><button @onclick="@(() => VerCentral(c))">Ver</button></td>
+                    <td>@c.Nome</td>
+                    <td>@c.Tipo</td>
+                    <td>@c.CoordenadaX</td>
+                    <td>@c.CoordenadaY</td>
+                    <td>@c.Endereco</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (loginState.Gestor == true) {
+        <p><button @onclick="@(() => AdicionarCentral())">AdicionarCentral</button></p>
+    }
+}
+@code {
+
+    List<MapaCentralModel> centrais;
+
+    protected void VerCentral(MapaCentralModel c)
+    {
+        NavManager.NavigateTo("/central/" + c.Id);
+    }
+
+    protected void AdicionarCentral()
+    {
+        NavManager.NavigateTo("/mapaCentral/AdicionarCentral");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string sql = "CALL mapaCentral()";
+        centrais = await _data.LoadData<MapaCentralModel, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+    }
+}
