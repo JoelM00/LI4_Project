@@ -11,24 +11,32 @@ USE RemDatabase;
 -- SELECT * FROM utilizador;
 
 INSERT INTO localizacao (coordenadaX,coordenadaY,Endereco) VALUES
-	(10,10,"braga"),
-    (10,15,"lisboa"),
-    (15,20,"porto");
+	(10,10,"Braga"),
+    (10,15,"Lisboa"),
+    (15,20,"Porto"),
+    (1,5,"Madeira");
 INSERT INTO empresa (nome,ceo,descricao,sede,contacto) VALUES
-	("RemEletro","Carlos","Famosa","Braga","986206397"),
-    ("EnergySavings","Sara","Eficiente","Porto","978162964");
+	("RemEletro","Carlos","Conhecida e Confiável","Braga","986206397"),
+    ("EnergySavings","Sara","Recen Desenvolvida","Porto","978162964"),
+    ("GreenPower","Joel","Empresa Nacional","Lisboa","972640289");
 INSERT INTO utilizador (email,password,nome,gestor,logged,lastActivity) VALUES
 	("carlos@hotmail.com","1234","Carlos Ferreira",True,False,'2021-06-03 13:40:00'),
     ("sara@hotmail.com","1234","Sara",True,False,'2021-06-03 13:40:00'),
-    ("joel@hotmail.com","1234","Joel",False,False,'2021-06-03 13:40:00'),
-    ("manuel@hotmail.com","1234","Manuel",False,False,'2021-06-03 13:40:00');
+    ("joel@hotmail.com","1234","Joel",True,False,'2021-06-03 13:40:00'),
+    ("catarina@hotmail.com","1234","Catarina",True,False,'2021-06-03 13:40:00'),
+    ("manuel@hotmail.com","1234","Manuel",False,False,'2021-06-03 13:40:00'),
+     ("jose@hotmail.com","1234","Jose",False,False,'2021-06-03 13:40:00');
 INSERT INTO  gestor (cargo,Empresa_id,Utilizador_email) VALUES
 	("CEO",1,"carlos@hotmail.com"),
-    ("CEO",2,"sara@hotmail.com");
+    ("CEO",2,"sara@hotmail.com"),
+	("CEO",3,"joel@hotmail.com"),
+    ("Tecnico",1,"catarina@hotmail.com");
 INSERT INTO central (estado,motorers,ultimaAtividade,nome,tipo,valor,inauguracao,Empresa_id,Localizacao_id,maximoDiario,minimoDiario,Gestor_Utilizador_email) Values
-	("Funcionar",10,'2021-06-03',"CentralBraga","eolica",10,2000,1,1,30,16,"carlos@hotmail.com"),
-    ("Funcionar",20,'2021-06-03',"CentralLisboa","eolica",10,2000,1,2,50,25,"carlos@hotmail.com"),
-    ("Pausa",5,'2021-06-03',"CentralPorto","hidrolica",5,2005,2,3,100,20,"sara@hotmail.com");
+	("Funcionar",10,'2021-06-03',"RemEletroCentralBraga","eolica",0,2000,1,1,400,200,"carlos@hotmail.com"),
+    ("Funcionar",20,'2021-06-03',"RemEletroCentralLisboa","eolica",0,2007,1,2,480,300,"carlos@hotmail.com"),
+    ("Pausa",5,'2021-06-03',"EnergySavingsCentralPorto","hidrolica",0,2005,2,3,400,200,"sara@hotmail.com"),
+    ("Pausa",7,'2021-06-03',"GreenPowerCentralMadeira","geotermina",0,2010,3,4,400,200,"joel@hotmail.com");
+/*
 INSERT INTO condicaoClimatica (data,hora,CondicaoNumerica,Central_ID) VALUES
 	('2010-06-01',1,50,1),('2010-06-10',2,50,1),('2010-06-25',3,50,1),
     ('2010-06-01',2,50,1),('2010-06-10',3,50,1),('2010-06-25',4,50,1),
@@ -45,6 +53,7 @@ INSERT INTO energia (quantidade,data,hora,Central_ID) VALUES
     (20,'2010-07-01',1,2),(10,'2010-07-10',2,2),(30,'2010-07-25',3,2),
 	(20,'2010-06-01',1,3),(10,'2010-06-10',2,3),(30,'2010-06-25',3,3),
     (20,'2010-07-01',1,3),(10,'2010-07-10',2,3),(30,'2010-07-25',3,3);
+    */
 INSERT INTO aviso (mensagem,data,autor,Central_id) VALUES 
 	("fechado por covid",'2021-06-05','carlos@hotmail.com',1),
     ("fechado por covid",'2021-06-05','carlos@hotmail.com',2);
@@ -91,7 +100,7 @@ FROM central
     INNER JOIN Empresa ON Empresa.id=central.Empresa_id
     WHERE central.id=idInput;
 END$$
--- CALL centralInfo(0);
+-- CALL centralInfo(1);
 -- ------------------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------
 
@@ -303,59 +312,6 @@ END$$
 -- ------------------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------
 
-
--- insereDados ------------------------------------------------------------------------
--- ------------------------------------------------------------------------------------------
--- DROP PROCEDURE insereDados;
-DELIMITER $$
-CREATE PROCEDURE insereDados (IN centralID INT,IN dataInsere DATE,IN horaInsere INT,IN quant INT,IN quantCond INT)
-BEGIN
-	DECLARE en INT;
-    DECLARE maximo INT;
-    DECLARE minimo INT;
-    DECLARE ultFunc DATE;
-    
-	-- -------------------------------------------------------------------------------------------
-	-- Vai Buscar as variavéis
-    SELECT valor,maximoDiario,minimoDiario,ultimaAtividade INTO en,maximo,minimo,ultFunc 
-		FROM central WHERE central.id=centralID;
-	-- ------------------------------------------------------------------------------------
-    
-    -- Se passou um dia e não atingiu minimo manda aviso
-	IF (dataInsere=ultFunc + INTERVAL 1 DAY AND en<minimo) THEN
-		INSERT INTO aviso (mensagem,data,Central_id,autor) VALUES ('minimo Nao Alcancado Ontem',dataInsere,centralID,'automatico');
-	END IF;
-    
-    -- Se passou mais que um dia atualiza variavéis de valor e ultimoFuncionamento
-	IF (dataInsere>ultFunc) THEN
-		UPDATE central SET valor=0,ultimaAtividade=dataInsere WHERE central.id=centralID;
-	END IF;
-    
-	-- ------------------------------------------------------------------------------
-	SELECT ultimaAtividade,valor INTO ultFunc,en FROM central WHERE central.id=centralID;
-	-- -----------------------------------------------------------------------------
-    
-    -- Se for o mesmo dia e atingiu o minimo manda aviso
-    IF (en<minimo AND en+quant>minimo) THEN
-		INSERT INTO aviso (mensagem,data,Central_id,autor) VALUES ('minimo Alcancado',dataInsere,centralID,'automatico');
-	END IF;
-    
-    -- Se for o mesmo dia e atingiu o maximo manda aviso
-    IF (en<maximo AND en+quant>maximo) THEN
-		INSERT INTO aviso (mensagem,data,Central_id,autor) VALUES ('maximo Alcancado',dataInsere,centralID,'automatico');
-	END IF;
-    
-    -- Atualiza valor na central
-    UPDATE central SET valor=valor+quant WHERE central.id=centralID;
-    
-    -- Insere Dados na tabla de energias
-    INSERT INTO energia (quantidade,data,hora,Central_id) VALUES (quant,dataInsere,horaInsere,centralID);
-    INSERT INTO condicaoclimatica (condicaoNumerica,data,hora,Central_id) VALUES (quant,dataInsere,horaInsere,centralID);
-END$$
--- CALL insereDados(1,'2021-06-04',13,5,50);
--- ---------------------------------------------------------------------------------------------------
--- -------------------------------------------------------------------------------------------------------
-
 -- removeCentral -----------------------------------------------------------------
 -- --------------------------------------------------------------------------------
 -- DROP PROCEDURE removeCentral;
@@ -371,7 +327,6 @@ END$$
 -- CALL removeCentral(1);
 -- ------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------
-
 
 -- adicionarCentral ---------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------
@@ -441,6 +396,75 @@ END $$
 DELIMITER $$
 CREATE PROCEDURE retirarAvisos(IN idCentral INT,IN dataInput DATETIME)
 BEGIN
-	DELETE FROM aviso WHERE Central_id=idCentral AND aviso.data>=dataInput;
+	DELETE FROM aviso WHERE Central_id=idCentral AND aviso.data<=dataInput;
 END $$
--- CALL retirarAvisos(6,'2000-01-01');
+-- CALL retirarAvisos(1,'2030-01-01');
+-- -----------------------------------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------------------------------
+
+-- Retirar Historico -----------------------------------------
+-- --------------------------------------------------------
+-- DROP PROCEDURE retirarHistorico;
+DELIMITER $$
+CREATE PROCEDURE retirarHistorico(IN idCentral INT,IN dataInput DATETIME)
+BEGIN
+	DELETE FROM energia WHERE Central_id=idCentral AND energia.data<=dataInput;
+    DELETE FROM condicaoclimatica WHERE Central_id=idCentral AND condicaoclimatica.data<=dataInput;
+END $$
+-- -----------------------------------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------------------------------
+
+-- insereDados ------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------
+-- DROP PROCEDURE insereDados;
+DELIMITER $$
+CREATE PROCEDURE insereDados (IN centralID INT,IN dataInsere DATE,IN horaInsere INT,IN quant INT,IN quantCond INT)
+BEGIN
+	DECLARE en INT;
+    DECLARE maximo INT;
+    DECLARE minimo INT;
+    DECLARE ultFunc DATE;
+    
+	-- -------------------------------------------------------------------------------------------
+	-- Vai Buscar as variavéis
+    SELECT valor,maximoDiario,minimoDiario,ultimaAtividade INTO en,maximo,minimo,ultFunc 
+		FROM central WHERE central.id=centralID;
+	-- ------------------------------------------------------------------------------------
+    
+    IF (dataInsere >=ultFunc) THEN
+		-- Se passou um dia e não atingiu minimo manda aviso
+		IF (dataInsere=ultFunc + INTERVAL 1 DAY AND en<minimo) THEN
+		INSERT INTO aviso (mensagem,data,Central_id,autor) VALUES ('minimo Nao Alcancado Ontem',dataInsere,centralID,'automatico');
+		END IF;
+    
+		-- Se passou mais que um dia atualiza variavéis de valor e ultimoFuncionamento
+		IF (dataInsere>ultFunc) THEN
+		UPDATE central SET valor=0,ultimaAtividade=dataInsere WHERE central.id=centralID;
+		END IF;
+    
+		-- ------------------------------------------------------------------------------
+		SELECT ultimaAtividade,valor INTO ultFunc,en FROM central WHERE central.id=centralID;
+		-- -----------------------------------------------------------------------------
+    
+		-- Se atingiu o minimo manda aviso
+		IF (en<=minimo AND en+quant>minimo) THEN
+		INSERT INTO aviso (mensagem,data,Central_id,autor) VALUES ('minimo Alcancado',dataInsere,centralID,'automatico');
+		END IF;
+    
+		-- Se atingiu o maximo manda aviso
+		IF (en<=maximo AND en+quant>maximo) THEN
+		INSERT INTO aviso (mensagem,data,Central_id,autor) VALUES ('maximo Alcancado',dataInsere,centralID,'automatico');
+		END IF;
+    
+		-- Atualiza valor na central
+		UPDATE central SET valor=valor+quant WHERE central.id=centralID;
+    
+		-- Insere Dados na tabla de energias
+		INSERT INTO energia (quantidade,data,hora,Central_id) VALUES (quant,dataInsere,horaInsere,centralID);
+		INSERT INTO condicaoclimatica (condicaoNumerica,data,hora,Central_id) VALUES (quant,dataInsere,horaInsere,centralID);
+    END IF;
+END$$
+-- CALL insereDados(1,'2021-06-04',13,5,50);
+-- ---------------------------------------------------------------------------------------------------
+-- -------------------------------------------------------------------------------------------------------
+

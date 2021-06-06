@@ -50,8 +50,8 @@ else
 
 
 @code {
-    public DateTime data { get; set; }
-    public string unidade { get; set; } = "";
+    public DateTime data { get; set; } = DateTime.Now;
+    public string unidade { get; set; } = "eolica";
     List<GraficoModel> grafico;
 
     protected void PutEolica()

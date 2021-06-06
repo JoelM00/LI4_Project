@@ -76,28 +76,28 @@ using Rem.Shared;
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\Rem\Pages\MapaEnergias.razor"
+#line 3 "C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\Rem\Pages\Simulacao.razor"
 using DataLibrary;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\Rem\Pages\MapaEnergias.razor"
+#line 4 "C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\Rem\Pages\Simulacao.razor"
 using Rem.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\Rem\Pages\MapaEnergias.razor"
+#line 5 "C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\Rem\Pages\Simulacao.razor"
 using Microsoft.Extensions.Configuration;
 
 #line default
 #line hidden
 #nullable disable
-    [Microsoft.AspNetCore.Components.RouteAttribute("/MapaEnergias")]
-    public partial class MapaEnergias : Microsoft.AspNetCore.Components.ComponentBase
+    [Microsoft.AspNetCore.Components.RouteAttribute("/simulacao")]
+    public partial class Simulacao : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
         protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
@@ -105,33 +105,49 @@ using Microsoft.Extensions.Configuration;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 52 "C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\Rem\Pages\MapaEnergias.razor"
+#line 38 "C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\Rem\Pages\Simulacao.razor"
        
-    public DateTime data { get; set; } = DateTime.Now;
-    public string unidade { get; set; } = "eolica";
-    List<GraficoModel> grafico;
+    public DateTime dataMin { get; set; } = DateTime.Now;
+    public DateTime dataMax { get; set; } = DateTime.Now;
+    public DateTime dataControl { get; set; }
+    public int hora;
+    List<MapaCentralModel> centrais;
+    public Random r = new Random();
+    public int value;
+    public string pass = "";
+    public bool carregando = false;
 
-    protected void PutEolica()
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
-        unidade = "eolica";
+        string sql = "CALL mapaCentral()";
+        centrais = await _data.LoadData<MapaCentralModel, dynamic>(sql, new { }, _config.GetConnectionString("default"));
     }
 
-    protected void PutHidrolica()
+    protected async Task SimulaDados()
     {
-        unidade = "hidrolica";
-    }
 
-    protected void PutGeotermica()
-    {
-        unidade = "geotermica";
-    }
+        carregando = true;
+        foreach (var c in centrais)
+        {
+            for (dataControl = dataMin; dataControl <= dataMax; dataControl = dataControl.AddDays(1))
+            {
+                for (int hora = 8; hora <= 22; hora++)
+                {
+                    value = r.Next(50);
 
-    protected async Task MostrarHistorico()
-    {
-        string sql = "CALL dadosNacionais('" +
-            data.Year + "-" + data.Month + "-" + data.Day +
-            "','" + unidade + "');";
-        grafico = await _data.LoadData<GraficoModel, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+                    string sql = "CALL insereDados(" + c.Id +
+
+                    ",'" + dataControl.Year + "-" + dataControl.Month + "-" + dataControl.Day + "'," + hora + "," + value + "," + value + ");";
+
+                    await _data.SaveData(sql, new { }, _config.GetConnectionString("default"));
+
+                }
+            }
+        }
+        NavManager.NavigateTo("/mapaCentral");
     }
 
 #line default

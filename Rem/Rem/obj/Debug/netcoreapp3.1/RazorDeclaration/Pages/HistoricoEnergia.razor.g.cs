@@ -107,9 +107,9 @@ using Microsoft.Extensions.Configuration;
 #nullable restore
 #line 55 "C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\Rem\Pages\HistoricoEnergia.razor"
        
-    public DateTime dataMin { get; set; }
-    public DateTime dataMax { get; set; }
-    public string unidade { get; set; } = "nada";
+    public DateTime dataMin { get; set; } = DateTime.Now;
+    public DateTime dataMax { get; set; } = DateTime.Now;
+    public string unidade { get; set; } = "dias";
     List<GraficoModel> grafico;
 
     [Parameter]

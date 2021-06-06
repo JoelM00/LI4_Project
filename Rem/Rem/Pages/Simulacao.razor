@@ -1,0 +1,81 @@
+﻿@page "/simulacao"
+
+@using DataLibrary
+@using Rem.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAcess _data
+@inject IConfiguration _config
+@inject NavigationManager NavManager
+@inject LoggedState loginState;
+
+<h3>Simulacao</h3>
+
+<input id="pass" type="text" @bind-value="pass" />
+
+@if (pass == "1234")
+{
+    if (carregando == true){<p>Carregando</p> }
+    else
+    {
+        <input id="date" type="date" @bind-value="dataMin" />
+        <input id="date" type="date" @bind-value="dataMax" />
+
+        <p></p>
+        @if (centrais == null) {<p>Loading ...</p>}
+        else
+        {
+        <p></p>
+        <button type="submit" @onclick=@SimulaDados> Simular </button><p></p>
+        }
+    }
+
+}
+else
+{
+    <p>Insira Palavra Pass</p>
+}
+
+@code {
+    public DateTime dataMin { get; set; } = DateTime.Now;
+    public DateTime dataMax { get; set; } = DateTime.Now;
+    public DateTime dataControl { get; set; }
+    public int hora;
+    List<MapaCentralModel> centrais;
+    public Random r = new Random();
+    public int value;
+    public string pass = "";
+    public bool carregando = false;
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string sql = "CALL mapaCentral()";
+        centrais = await _data.LoadData<MapaCentralModel, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+    }
+
+    protected async Task SimulaDados()
+    {
+
+        carregando = true;
+        foreach (var c in centrais)
+        {
+            for (dataControl = dataMin; dataControl <= dataMax; dataControl = dataControl.AddDays(1))
+            {
+                for (int hora = 8; hora <= 22; hora++)
+                {
+                    value = r.Next(50);
+
+                    string sql = "CALL insereDados(" + c.Id +
+
+                    ",'" + dataControl.Year + "-" + dataControl.Month + "-" + dataControl.Day + "'," + hora + "," + value + "," + value + ");";
+
+                    await _data.SaveData(sql, new { }, _config.GetConnectionString("default"));
+
+                }
+            }
+        }
+        NavManager.NavigateTo("/mapaCentral");
+    }
+}

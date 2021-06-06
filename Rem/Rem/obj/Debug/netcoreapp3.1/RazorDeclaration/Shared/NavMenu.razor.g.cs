@@ -83,7 +83,7 @@ using Rem.Shared;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 48 "C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\Rem\Shared\NavMenu.razor"
+#line 53 "C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\Rem\Shared\NavMenu.razor"
        
     private bool collapseNavMenu = true;
 

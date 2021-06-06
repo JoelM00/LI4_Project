@@ -10,8 +10,8 @@
 
 <h3>HistoricoEnergia</h3>
 
-<input id="date" type="date" placeholder="YYYY-MM-DD" @bind-value="dataMin" />
-<input id="date" type="date" placeholder="YYYY-MM-DD" @bind-value="dataMax" />
+<input id="date" type="date" @bind-value="dataMin" />
+<input id="date" type="date" @bind-value="dataMax" />
 
 <p>TipoAtual=@unidade</p>
 <button @onclick=@PutHoras> Horas </button>
@@ -55,9 +55,9 @@ else
 
 
 @code {
-    public DateTime dataMin { get; set; }
-    public DateTime dataMax { get; set; }
-    public string unidade { get; set; } = "nada";
+    public DateTime dataMin { get; set; } = DateTime.Now;
+    public DateTime dataMax { get; set; } = DateTime.Now;
+    public string unidade { get; set; } = "dias";
     List<GraficoModel> grafico;
 
     [Parameter]
