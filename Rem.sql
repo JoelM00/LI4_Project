@@ -17,25 +17,27 @@ INSERT INTO localizacao (coordenadaX,coordenadaY,Endereco) VALUES
     (1,5,"Madeira");
 INSERT INTO empresa (nome,ceo,descricao,sede,contacto) VALUES
 	("RemEletro","Carlos","Conhecida e Confiável","Braga","986206397"),
-    ("EnergySavings","Sara","Recen Desenvolvida","Porto","978162964"),
-    ("GreenPower","Joel","Empresa Nacional","Lisboa","972640289");
+    ("EnergySavings","Sara","Recem Desenvolvida","Porto","978162964"),
+    ("GreenPower","Joel","Empresa Nacional","Lisboa","972640289"),
+    ("MoreEnergy","Manuel","Empresa em crescimento","Porto","985346274");
 INSERT INTO utilizador (email,password,nome,gestor,logged,lastActivity) VALUES
 	("carlos@hotmail.com","1234","Carlos Ferreira",True,False,'2021-06-03 13:40:00'),
     ("sara@hotmail.com","1234","Sara",True,False,'2021-06-03 13:40:00'),
     ("joel@hotmail.com","1234","Joel",True,False,'2021-06-03 13:40:00'),
-    ("catarina@hotmail.com","1234","Catarina",True,False,'2021-06-03 13:40:00'),
     ("manuel@hotmail.com","1234","Manuel",False,False,'2021-06-03 13:40:00'),
+    ("catarina@hotmail.com","1234","Catarina",True,False,'2021-06-03 13:40:00'),
      ("jose@hotmail.com","1234","Jose",False,False,'2021-06-03 13:40:00');
 INSERT INTO  gestor (cargo,Empresa_id,Utilizador_email) VALUES
 	("CEO",1,"carlos@hotmail.com"),
     ("CEO",2,"sara@hotmail.com"),
 	("CEO",3,"joel@hotmail.com"),
-    ("Tecnico",1,"catarina@hotmail.com");
+    ("CEO",4,"manuel@hotmail.com");
 INSERT INTO central (estado,motorers,ultimaAtividade,nome,tipo,valor,inauguracao,Empresa_id,Localizacao_id,maximoDiario,minimoDiario,Gestor_Utilizador_email) Values
 	("Funcionar",10,'2021-06-03',"RemEletroCentralBraga","eolica",0,2000,1,1,400,200,"carlos@hotmail.com"),
     ("Funcionar",20,'2021-06-03',"RemEletroCentralLisboa","eolica",0,2007,1,2,480,300,"carlos@hotmail.com"),
-    ("Pausa",5,'2021-06-03',"EnergySavingsCentralPorto","hidrolica",0,2005,2,3,400,200,"sara@hotmail.com"),
-    ("Pausa",7,'2021-06-03',"GreenPowerCentralMadeira","geotermina",0,2010,3,4,400,200,"joel@hotmail.com");
+    ("Pausa",3,'2021-06-03',"MoreEnergyCentralPorto","eolica",0,2017,4,3,400,200,"manuel@hotmail.com"),
+    ("Pausa",5,'2021-06-03',"EnergySavingsCentralPorto","hidraulica",0,2005,2,3,400,200,"sara@hotmail.com"),
+    ("Pausa",7,'2021-06-03',"GreenPowerCentralMadeira","geotermica",0,2010,3,4,400,200,"joel@hotmail.com");
 /*
 INSERT INTO condicaoClimatica (data,hora,CondicaoNumerica,Central_ID) VALUES
 	('2010-06-01',1,50,1),('2010-06-10',2,50,1),('2010-06-25',3,50,1),
@@ -260,7 +262,7 @@ CREATE PROCEDURE mudarEstado (IN idCentral INT,IN estadoInput VARCHAR(45))
 BEGIN
 	UPDATE central SET estado=estadoInput WHERE central.id=idCentral;
 END$$
--- CALL mudarEstado (1,'em construção');
+-- CALL mudarEstado (1,'em construÃ§Ã£o');
 -- ------------------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------
 
@@ -426,18 +428,18 @@ BEGIN
     DECLARE ultFunc DATE;
     
 	-- -------------------------------------------------------------------------------------------
-	-- Vai Buscar as variavéis
+	-- Vai Buscar as variavÃ©is
     SELECT valor,maximoDiario,minimoDiario,ultimaAtividade INTO en,maximo,minimo,ultFunc 
 		FROM central WHERE central.id=centralID;
 	-- ------------------------------------------------------------------------------------
     
     IF (dataInsere >=ultFunc) THEN
-		-- Se passou um dia e não atingiu minimo manda aviso
+		-- Se passou um dia e nÃ£o atingiu minimo manda aviso
 		IF (dataInsere=ultFunc + INTERVAL 1 DAY AND en<minimo) THEN
 		INSERT INTO aviso (mensagem,data,Central_id,autor) VALUES ('minimo Nao Alcancado Ontem',dataInsere,centralID,'automatico');
 		END IF;
     
-		-- Se passou mais que um dia atualiza variavéis de valor e ultimoFuncionamento
+		-- Se passou mais que um dia atualiza variavÃ©is de valor e ultimoFuncionamento
 		IF (dataInsere>ultFunc) THEN
 		UPDATE central SET valor=0,ultimaAtividade=dataInsere WHERE central.id=centralID;
 		END IF;
@@ -467,4 +469,3 @@ END$$
 -- CALL insereDados(1,'2021-06-04',13,5,50);
 -- ---------------------------------------------------------------------------------------------------
 -- -------------------------------------------------------------------------------------------------------
-

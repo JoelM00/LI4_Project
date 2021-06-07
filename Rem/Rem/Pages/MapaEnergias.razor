@@ -14,7 +14,7 @@
 
 <p>TipoAtual=@unidade</p>
 <button @onclick=@PutEolica> Eolica </button>
-<button @onclick=@PutHidrolica> Hidrolica </button>
+<button @onclick=@PutHidraulica> Hidraulica </button>
 <button @onclick=@PutGeotermica> Geotermica </button>
 
 <p></p><button type="submit" @onclick=@MostrarHistorico> Submit </button><p></p>
@@ -59,9 +59,9 @@ else
         unidade = "eolica";
     }
 
-    protected void PutHidrolica()
+    protected void PutHidraulica()
     {
-        unidade = "hidrolica";
+        unidade = "hidraulica";
     }
 
     protected void PutGeotermica()

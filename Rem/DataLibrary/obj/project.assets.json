@@ -937,19 +937,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\carlo\\.nuget\\packages\\": {}
+    "C:\\Users\\Utilizador\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\carlo\\OneDrive\\Ambiente de Trabalho\\Rem\\DataLibrary\\DataLibrary.csproj",
+      "projectUniqueName": "C:\\Users\\Utilizador\\Documents\\ne\\Uni - 3 ano\\2 semestre\\LI4\\Fase 3\\Rem\\DataLibrary\\DataLibrary.csproj",
       "projectName": "DataLibrary",
-      "projectPath": "C:\\Users\\carlo\\OneDrive\\Ambiente de Trabalho\\Rem\\DataLibrary\\DataLibrary.csproj",
-      "packagesPath": "C:\\Users\\carlo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\carlo\\OneDrive\\Ambiente de Trabalho\\Rem\\DataLibrary\\obj\\",
+      "projectPath": "C:\\Users\\Utilizador\\Documents\\ne\\Uni - 3 ano\\2 semestre\\LI4\\Fase 3\\Rem\\DataLibrary\\DataLibrary.csproj",
+      "packagesPath": "C:\\Users\\Utilizador\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Utilizador\\Documents\\ne\\Uni - 3 ano\\2 semestre\\LI4\\Fase 3\\Rem\\DataLibrary\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\carlo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Utilizador\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -999,7 +999,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
       }
     }
   }

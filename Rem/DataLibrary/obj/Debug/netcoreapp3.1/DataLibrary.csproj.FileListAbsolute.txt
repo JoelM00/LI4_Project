@@ -7,3 +7,12 @@ C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\obj\Debug\netcoreap
 C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.csproj.CoreCompileInputs.cache
 C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.dll
 C:\Users\carlo\OneDrive\Ambiente de Trabalho\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.pdb
+C:\Users\Utilizador\Documents\ne\Uni - 3 ano\2 semestre\LI4\Fase 3\Rem\DataLibrary\bin\Debug\netcoreapp3.1\DataLibrary.deps.json
+C:\Users\Utilizador\Documents\ne\Uni - 3 ano\2 semestre\LI4\Fase 3\Rem\DataLibrary\bin\Debug\netcoreapp3.1\DataLibrary.dll
+C:\Users\Utilizador\Documents\ne\Uni - 3 ano\2 semestre\LI4\Fase 3\Rem\DataLibrary\bin\Debug\netcoreapp3.1\DataLibrary.pdb
+C:\Users\Utilizador\Documents\ne\Uni - 3 ano\2 semestre\LI4\Fase 3\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.csprojAssemblyReference.cache
+C:\Users\Utilizador\Documents\ne\Uni - 3 ano\2 semestre\LI4\Fase 3\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.AssemblyInfoInputs.cache
+C:\Users\Utilizador\Documents\ne\Uni - 3 ano\2 semestre\LI4\Fase 3\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.AssemblyInfo.cs
+C:\Users\Utilizador\Documents\ne\Uni - 3 ano\2 semestre\LI4\Fase 3\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Utilizador\Documents\ne\Uni - 3 ano\2 semestre\LI4\Fase 3\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.dll
+C:\Users\Utilizador\Documents\ne\Uni - 3 ano\2 semestre\LI4\Fase 3\Rem\DataLibrary\obj\Debug\netcoreapp3.1\DataLibrary.pdb
